@@ -1,0 +1,86 @@
+# Test configuration file recreating development defaults
+
+# Required
+model_save_file: "/home/lverhoef/glp/synthetic_data/experiments/002_test_dataset_size/models/aug_cnn_0_002.pt"
+
+# Required
+training_hyperparameters:
+  batch_size: 256
+  epochs: 1000
+  accumulation_batches: 1
+  loss_function: crps
+  learning_rate: 1.0e-3
+  early_stopping:
+    enabled: True
+    patience: 20
+    min_delta: 1.0e-4
+  num_classes: 2
+  diagonal_categorization: True
+  # We modify the ratio via bash script
+  ds_size_ratio: 0.002
+  random_seed: 128658126
+
+### data_augmentation
+# rotations: max_degrees, num_rotations
+# noisings: standard_deviation, num_noisings
+# translations: max_shift, num_translations
+data_augmentation:
+  rotations:
+    max_degrees: 60
+    num_rotations: 2
+  # noisings:
+    # standard_deviation: 0.5
+    # num_noisings: 2
+  # translations:
+    # max_shift: 0.05
+    # num_translations: 3
+
+### setup_layers
+# glp_rotation_stack: num_angles, angle_inc (only one needed)
+
+### encoding_layers
+# conv_block: in_channels, out_channels, leaky_relu_slope, kernel_size, pooling_size
+# glp_conv_block: in_channels, out_channels, leaky_relu_slope, kernel_size, pooling_size
+# flatten: start_dim (default 1), end_dim (default -1)
+encoding_layers:
+  conv_block_1:
+    type: conv_block
+    in_channels: 1
+    out_channels: 16
+  conv_block_2:
+    type: conv_block
+    in_channels: 16
+    out_channels: 32
+  conv_block_3:
+    type: conv_block
+    in_channels: 32
+    out_channels: 64
+  conv_block_4:
+    type: conv_block
+    in_channels: 64
+    out_channels: 128
+  flatten:
+    type: flatten
+    no_defaults: True
+### encoding_layer_defaults
+encoding_layer_defaults:
+  leaky_relu_slope: 0.2
+  kernel_size: 3
+  pooling_size: 2
+### dense_layers
+# dense_block: in_neurons, out_neurons, dropout_rate, leaky_relu_slope
+# linear: in_features, out_features
+dense_layers:
+  dense_block_1:
+    type: dense_block
+    in_neurons: 8192
+    out_neurons: 100
+  out_layer:
+    type: linear
+    no_defaults: True
+    in_features: 100
+    out_features: 100
+### dense_layer_defaults
+dense_layer_defaults:
+  dropout_rate: 0.2
+  leaky_relu_slope: 0.2

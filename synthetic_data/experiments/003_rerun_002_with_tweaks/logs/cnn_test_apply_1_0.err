@@ -1,0 +1,43 @@
+Traceback (most recent call last):
+  File "/home/lverhoef/glp/synthetic_data/apply_model.py", line 96, in <module>
+    main()
+    ~~~~^^
+  File "/home/lverhoef/glp/synthetic_data/apply_model.py", line 69, in main
+    for X, y in dataloader:
+                ^^^^^^^^^^
+  File "/home/lverhoef/miniforge3/envs/glp/lib/python3.14/site-packages/torch/utils/data/dataloader.py", line 500, in __iter__
+    return self._get_iterator()
+           ~~~~~~~~~~~~~~~~~~^^
+  File "/home/lverhoef/miniforge3/envs/glp/lib/python3.14/site-packages/torch/utils/data/dataloader.py", line 433, in _get_iterator
+    return _MultiProcessingDataLoaderIter(self)
+  File "/home/lverhoef/miniforge3/envs/glp/lib/python3.14/site-packages/torch/utils/data/dataloader.py", line 1192, in __init__
+    w.start()
+    ~~~~~~~^^
+  File "/home/lverhoef/miniforge3/envs/glp/lib/python3.14/multiprocessing/process.py", line 121, in start
+    self._popen = self._Popen(self)
+                  ~~~~~~~~~~~^^^^^^
+  File "/home/lverhoef/miniforge3/envs/glp/lib/python3.14/multiprocessing/context.py", line 230, in _Popen
+    return _default_context.get_context().Process._Popen(process_obj)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/lverhoef/miniforge3/envs/glp/lib/python3.14/multiprocessing/context.py", line 306, in _Popen
+    return Popen(process_obj)
+  File "/home/lverhoef/miniforge3/envs/glp/lib/python3.14/multiprocessing/popen_forkserver.py", line 35, in __init__
+    super().__init__(process_obj)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/lverhoef/miniforge3/envs/glp/lib/python3.14/multiprocessing/popen_fork.py", line 20, in __init__
+    self._launch(process_obj)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/lverhoef/miniforge3/envs/glp/lib/python3.14/multiprocessing/popen_forkserver.py", line 47, in _launch
+    reduction.dump(process_obj, buf)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/lverhoef/miniforge3/envs/glp/lib/python3.14/multiprocessing/reduction.py", line 60, in dump
+    ForkingPickler(file, protocol).dump(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/lverhoef/miniforge3/envs/glp/lib/python3.14/multiprocessing/queues.py", line 55, in __getstate__
+    def __getstate__(self):
+    
+KeyboardInterrupt
+when serializing tuple item 2
+when serializing dict item '_args'
+when serializing multiprocessing.context.Process state
+when serializing multiprocessing.context.Process object

@@ -239,7 +239,9 @@ class CNN(nn.Module):
 
 
 def train(dataloader, model, loss_fn, optimizer, accumulation_batches=1, device="cpu"):
-    size = len(dataloader) * dataloader.batch_size
+    size = len(dataloader.dataset)
+    total_num_batches = len(dataloader)
+    eff_accumulation_batches = accumulation_batches
     model.train()
     for batch, (X, y) in enumerate(dataloader):
         true_x_len = X.shape[0]
@@ -251,14 +253,19 @@ def train(dataloader, model, loss_fn, optimizer, accumulation_batches=1, device=
         pred = model(X)
         loss = loss_fn(pred, y)
 
-        loss = loss / accumulation_batches
+        loss = loss / eff_accumulation_batches
 
         loss.backward()
 
-        if ((batch + 1) % accumulation_batches == 0) or (batch + 1 == len(dataloader)):
+        if ((batch + 1) % accumulation_batches == 0) or (
+            batch + 1 == total_num_batches
+        ):
             # print("Optimization step")
             optimizer.step()
             optimizer.zero_grad()
+            eff_accumulation_batches = min(
+                accumulation_batches, total_num_batches - (batch + 1)
+            )
 
         if batch % (4 * accumulation_batches) == 0:
             loss, current = loss.item(), (batch + 1) * true_x_len
@@ -266,17 +273,17 @@ def train(dataloader, model, loss_fn, optimizer, accumulation_batches=1, device=
 
 
 def validate(dataloader, model, loss_fn, device="cpu"):
-    size = len(dataloader) * dataloader.batch_size
-    num_batches = len(dataloader)
+    total_samples = 0
     model.eval()
-    test_loss, correct, positive_preds = 0, 0, 0
+    val_loss, correct, positive_preds = 0, 0, 0
     with torch.no_grad():
         for X, y in dataloader:
             X, y = X.to(device), y.to(device)
             X = X.view(-1, 1, 128, 128)
             y = y.view(-1)
+            total_samples += len(y)
             pred = model(X)
-            test_loss += loss_fn(pred, y).item()
+            val_loss += len(y) * loss_fn(pred, y).item()
             positive_preds += (
                 ((torch.round(pred.mean(axis=-1))).type(torch.float))
                 .sum()
@@ -289,13 +296,13 @@ def validate(dataloader, model, loss_fn, device="cpu"):
                 .item()
                 # (torch.argmax(pred, dim=-1) == y).type(torch.float).sum().item()
             )
-    test_loss /= num_batches
-    correct /= size
-    positive_preds /= size
+    val_loss /= total_samples
+    correct /= total_samples
+    positive_preds /= total_samples
     print(
-        f"Validation Error: \nAccuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f}, Positive ratio: {positive_preds:>6f}"
+        f"Validation Error: \nAccuracy: {(100*correct):>0.1f}%, Avg loss: {val_loss:>8f}, Positive ratio: {positive_preds:>6f}"
     )
-    return test_loss, correct
+    return val_loss, correct
 
 
 class EarlyStopper:

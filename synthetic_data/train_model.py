@@ -87,7 +87,7 @@ def main():
 
     batch_size = hyperparam_config["batch_size"]
     cnn_train_dataloader = DataLoader(
-        cnn_train_ds, num_workers=4, batch_size=batch_size
+        cnn_train_ds, num_workers=4, batch_size=batch_size, drop_last=True, shuffle=True
     )
     cnn_valid_dataloader = DataLoader(
         cnn_valid_ds, num_workers=4, batch_size=batch_size

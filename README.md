@@ -20,3 +20,7 @@ More data on those data can be found in [this paper](https://journals.ametsoc.or
 
 [`environment.yml`](./environment.yml) contains a listing of all the packages needed for this repo.
 Installation was generally performed via pip, and the majority of the work was performed using PyTorch version 2.11.0 with CUDA version 13.3.
+
+## Generative AI Usage Statement
+
+Feedback from a ChatGPT review was used to make minor corrections to the validation loops and sampling procedures in the synthetic data section.
